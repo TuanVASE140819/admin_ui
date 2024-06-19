@@ -17,6 +17,9 @@ import UserDetailPage from "./pages/UserDetailPage";
 import GroupDetailPage from "./pages/GroupDetailPage";
 import UserPostListPage from "./pages/UserPostListPage";
 import GiftListPage from "./pages/GiftListPage";
+import EventManagementPage from "./pages/EventManagementPage";
+import EventStatisticPage from "./pages/EventStatisticPage";
+import EventFormPage from "./pages/EventFormPage";
 
 const { Content } = Layout;
 const posts = [
@@ -55,9 +58,18 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               {/* <Route path="/user-management" element={<UserManagement />} /> */}
               <Route path="/school-management" element={<SchoolManagement />} />
-              {/* <Route path="/event-management" element={<EventManagement />} />
-              <Route path="/news-management" element={<NewsManagement />} />
-              <Route path="/settings" element={<Settings />} /> */}
+              <Route
+                path="/event-management"
+                element={<EventManagementPage />}
+              />
+              <Route // Route cho trang chỉnh sửa sự kiện
+                path="/school/1/events/edit/1"
+                element={<EventFormPage />}
+              />
+              <Route // Route cho trang thêm sự kiện
+                path="/school/1/events/add"
+                element={<EventFormPage />}
+              />
               <Route path="/school/:schoolId" element={<SchoolDetailPage />} />
               <Route
                 path="/school/:schoolId/students"
@@ -78,6 +90,10 @@ const App = () => {
               <Route path="/school/1/groups" element={<GroupDetailPage />} />
               <Route path="/user/1/posts/1" element={<UserPostListPage />} />
               <Route path="/user/1/gifts" element={<GiftListPage />} />
+              <Route
+                path="/school/1/event/1/stats"
+                element={<EventStatisticPage />}
+              />
             </Routes>
           </Content>
         </Layout>

@@ -1,0 +1,9 @@
+.bannerUpload .ant-upload-list-picture-card .ant-upload-list-item,
+.bannerUpload .ant-upload-list-picture-card-container {
+  width: 100%;
+  height: 300px; /* Thay đổi chiều cao tại đây */
+}
+
+.bannerUpload .ant-upload-list-picture-card .ant-upload-list-item-info {
+  height: 100%;
+}
