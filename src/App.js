@@ -20,6 +20,7 @@ import GiftListPage from "./pages/GiftListPage";
 import EventManagementPage from "./pages/EventManagementPage";
 import EventStatisticPage from "./pages/EventStatisticPage";
 import EventFormPage from "./pages/EventFormPage";
+import NewsManagementPage from "./pages/NewsManagementPage";
 
 const { Content } = Layout;
 const posts = [
@@ -94,6 +95,7 @@ const App = () => {
                 path="/school/1/event/1/stats"
                 element={<EventStatisticPage />}
               />
+              <Route path="/news-management" element={<NewsManagementPage />} />
             </Routes>
           </Content>
         </Layout>
