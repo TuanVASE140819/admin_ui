@@ -9,11 +9,13 @@ import {
   Space,
   Popconfirm,
   message,
+  Select,
 } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic"; // Sử dụng CKEditor 5
 import Parser from "html-react-parser";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { Option } from "antd/es/mentions";
 
 const NewsManagementPage = () => {
   // state news
@@ -31,7 +33,7 @@ const NewsManagementPage = () => {
       id: 1,
       title: "Tin tức 1",
       content: "<p>Nội dung tin tức 1...</p>",
-      author: "Admin",
+      category: "Thể thao",
       createdAt: "2023-06-19",
       imageUrl: "https://via.placeholder.com/300x200",
     },
@@ -39,7 +41,7 @@ const NewsManagementPage = () => {
       id: 2,
       title: "Tin tức 2",
       content: "<p>Nội dung tin tức 2...</p>",
-      author: "Nguyễn Văn A",
+      category: "Giáo dục",
       createdAt: "2023-06-18",
       imageUrl: "https://via.placeholder.com/300x200",
     },
@@ -131,7 +133,8 @@ const NewsManagementPage = () => {
         <div>{Parser(content?.substring(0, 50) || "") + "..."}</div>
       ),
     },
-    { title: "Tác giả", dataIndex: "author", key: "author" },
+    // loại tin tức
+    { title: "Nhóm tin tức", dataIndex: "category", key: "category" },
     { title: "Ngày tạo", dataIndex: "createdAt", key: "createdAt" },
     {
       title: "Hành động",
@@ -178,7 +181,18 @@ const NewsManagementPage = () => {
           >
             <Input />
           </Form.Item>
-
+          {/* Select nhóm tin tức */}
+          <Form.Item
+            name="category"
+            label="Nhóm tin tức"
+            rules={[{ required: true, message: "Vui lòng chọn nhóm tin tức" }]}
+          >
+            <Select>
+              <Option value="1">Thể thao</Option>
+              <Option value="2">Giáo dục</Option>
+              <Option value="3">Công nghệ</Option>
+            </Select>
+          </Form.Item>
           <Form.Item
             name="content"
             label="Nội dung"
