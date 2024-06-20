@@ -7,7 +7,6 @@ import {
   Input,
   DatePicker,
   Upload,
-  Image,
   Space,
   Tag,
   Popconfirm,
@@ -28,11 +27,13 @@ const EventManagementPage = ({ schools }) => {
   const [events, setEvents] = useState(
     schoolId ? schools.find((school) => school.id === schoolId).events : []
   );
+  const [filteredEvents, setFilteredEvents] = useState(events);
 
   const [selectedEventType, setSelectedEventType] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [form] = Form.useForm();
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const eventData = [
     {
@@ -81,7 +82,11 @@ const EventManagementPage = ({ schools }) => {
     },
   ];
 
-  // ... (các hàm khác giữ nguyên)
+  useEffect(() => {
+    setEvents(eventData);
+    setFilteredEvents(eventData);
+  }, []);
+
   useEffect(() => {
     if (editingEvent) {
       form.setFieldsValue({
@@ -96,7 +101,7 @@ const EventManagementPage = ({ schools }) => {
 
   const showModal = (type = null, record = null) => {
     setSelectedEventType(type);
-    setEditingEvent(record); // Set editingEvent nếu đang chỉnh sửa
+    setEditingEvent(record);
     setIsModalVisible(true);
   };
 
@@ -113,6 +118,9 @@ const EventManagementPage = ({ schools }) => {
       cancelText: "Hủy",
       onOk: () => {
         setEvents(events.filter((event) => event.id !== record.id));
+        setFilteredEvents(
+          filteredEvents.filter((event) => event.id !== record.id)
+        );
         message.success("Sự kiện đã được xóa thành công.");
       },
     });
@@ -133,6 +141,11 @@ const EventManagementPage = ({ schools }) => {
             event.id === editingEvent.id ? { ...event, ...values } : event
           )
         );
+        setFilteredEvents(
+          filteredEvents.map((event) =>
+            event.id === editingEvent.id ? { ...event, ...values } : event
+          )
+        );
         message.success("Sự kiện đã được cập nhật thành công.");
       } else {
         // Thêm sự kiện mới
@@ -142,6 +155,7 @@ const EventManagementPage = ({ schools }) => {
           status: "upcoming",
         };
         setEvents([...events, newEvent]);
+        setFilteredEvents([...filteredEvents, newEvent]);
         message.success("Sự kiện đã được thêm thành công.");
       }
       setIsModalVisible(false);
@@ -196,15 +210,16 @@ const EventManagementPage = ({ schools }) => {
         <Space size="middle">
           <Button
             type="link"
-            onClick={() => navigate("/school/1/event/1/stats")}
+            onClick={() =>
+              navigate(`/school/${schoolId}/event/${record.id}/stats`)
+            }
           >
             Thống kê
           </Button>
           <Button
             type="link"
-            onClick={() => navigate("/school/1/events/edit/1")}
+            // onClick={() => handleEdit(record)} // Đã sửa lại tại đây
           >
-            {" "}
             <EditOutlined />
           </Button>
           <Popconfirm
@@ -222,20 +237,14 @@ const EventManagementPage = ({ schools }) => {
     },
   ];
 
-  useEffect(() => {
-    setEvents(eventData);
-  }, []);
-
-  const handleEdit = (record) => {
-    // Chuyển đổi startTime và endTime thành chuỗi trước khi truyền vào state
-    const recordWithFormattedTimes = {
-      ...record,
-      startTime: record.startTime.format("YYYY-MM-DD HH:mm:ss"),
-      endTime: record.endTime.format("YYYY-MM-DD HH:mm:ss"),
-    };
-
-    setEditingEvent(recordWithFormattedTimes);
-    showModal(record.type, recordWithFormattedTimes);
+  const handleSearch = (value) => {
+    setSearchKeyword(value);
+    const filtered = events.filter(
+      (event) =>
+        event.name.toLowerCase().includes(value.toLowerCase()) ||
+        event.description.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredEvents(filtered);
   };
 
   return (
@@ -251,13 +260,19 @@ const EventManagementPage = ({ schools }) => {
           value={selectedEventType}
           onChange={(value) => showModal(value)}
         />
+        <Input.Search
+          placeholder="Tìm kiếm sự kiện"
+          allowClear
+          onSearch={handleSearch}
+          style={{ width: 200, marginLeft: 10 }}
+        />
       </Button.Group>
 
-      <Table columns={columns} dataSource={events} />
+      <Table columns={columns} dataSource={filteredEvents} />
 
       <Modal
         title={editingEvent ? "Chỉnh sửa sự kiện" : "Thêm sự kiện mới"}
-        open={isModalVisible}
+        visible={isModalVisible}
         onCancel={handleCancel}
         onOk={handleSave}
       >
@@ -276,7 +291,6 @@ const EventManagementPage = ({ schools }) => {
           >
             <Input.TextArea />
           </Form.Item>
-          {/* Loại sự kiện không cần chọn trong modal nữa */}
           <Form.Item
             name="type"
             label="Loại sự kiện"

@@ -13,6 +13,7 @@ import {
   Image,
 } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
 const LuckyWheelManagementPage = () => {
   const [rewards, setRewards] = useState([
@@ -35,11 +36,16 @@ const LuckyWheelManagementPage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingReward, setEditingReward] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const [form] = Form.useForm();
 
   useEffect(() => {
     if (editingReward) {
-      form.setFieldsValue(editingReward);
+      form.setFieldsValue({
+        ...editingReward,
+        probability: (editingReward.probability * 100).toFixed(0),
+      });
     } else {
       form.resetFields();
     }
@@ -75,6 +81,7 @@ const LuckyWheelManagementPage = () => {
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
+      values.probability = values.probability / 100; // Chuyển đổi tỷ lệ trúng về dạng thập phân
       if (editingReward) {
         // Cập nhật phần thưởng
         setRewards(
@@ -99,6 +106,82 @@ const LuckyWheelManagementPage = () => {
     }
   };
 
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={`Tìm kiếm ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<PlusOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Xóa
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <PlusOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : "",
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        // Handle focus on the input
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
   const columns = [
     { title: "STT", dataIndex: "id", key: "id" },
     {
@@ -107,8 +190,18 @@ const LuckyWheelManagementPage = () => {
       key: "image",
       render: (image) => <Image src={image} width={50} />,
     },
-    { title: "Loại quà", dataIndex: "type", key: "type" },
-    { title: "Phần thưởng", dataIndex: "name", key: "name" },
+    {
+      title: "Loại quà",
+      dataIndex: "type",
+      key: "type",
+      ...getColumnSearchProps("type"),
+    },
+    {
+      title: "Phần thưởng",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps("name"),
+    },
     {
       title: "Tỷ lệ trúng (%)",
       dataIndex: "probability",
@@ -143,11 +236,11 @@ const LuckyWheelManagementPage = () => {
       <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
         Thêm phần thưởng
       </Button>
-      <Table columns={columns} dataSource={rewards} />
+      <Table columns={columns} dataSource={rewards} rowKey="id" />
 
       <Modal
         title={editingReward ? "Chỉnh sửa phần thưởng" : "Thêm phần thưởng mới"}
-        open={isModalVisible}
+        visible={isModalVisible}
         onCancel={handleCancel}
         onOk={handleSave}
       >

@@ -13,7 +13,7 @@ import {
   Image,
 } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import Highlighter from "react-highlight-words";
 
 const MysteryBoxManagementPage = ({ schools }) => {
   const [rewards, setRewards] = useState([
@@ -36,6 +36,8 @@ const MysteryBoxManagementPage = ({ schools }) => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingReward, setEditingReward] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -100,6 +102,82 @@ const MysteryBoxManagementPage = ({ schools }) => {
     }
   };
 
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={`Tìm kiếm ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<PlusOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Xóa
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <PlusOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : "",
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        // Handle focus on the input
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
   const columns = [
     { title: "STT", dataIndex: "id", key: "id" },
     {
@@ -108,8 +186,18 @@ const MysteryBoxManagementPage = ({ schools }) => {
       key: "image",
       render: (image) => <Image src={image} width={50} />,
     },
-    { title: "Loại quà", dataIndex: "type", key: "type" },
-    { title: "Phần thưởng", dataIndex: "name", key: "name" },
+    {
+      title: "Loại quà",
+      dataIndex: "type",
+      key: "type",
+      ...getColumnSearchProps("type"),
+    },
+    {
+      title: "Phần thưởng",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps("name"),
+    },
     {
       title: "Tỷ lệ trúng (%)",
       dataIndex: "probability",

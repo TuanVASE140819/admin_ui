@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Table, Button, Tag, Space, Popconfirm, Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { Table, Button, Tag, Space, Popconfirm, Avatar, Input } from "antd";
+import { UserOutlined, SearchOutlined } from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
+import { useNavigate } from "react-router-dom";
 
 const UserManagementPage = () => {
   const navigate = useNavigate();
@@ -29,6 +30,8 @@ const UserManagementPage = () => {
     },
     // Thêm người dùng khác tại đây
   ]);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   const handleBanUser = (record) => {
     setUsers(
@@ -50,6 +53,77 @@ const UserManagementPage = () => {
     navigate(`/user/${record.id}`); // Điều hướng đến trang chi tiết người dùng
   };
 
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={`Tìm kiếm ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Xóa
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : "",
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
   const columns = [
     {
       title: "",
@@ -58,8 +132,18 @@ const UserManagementPage = () => {
       render: (_, record) => <Avatar icon={<UserOutlined />} />, // Hiển thị avatar
     },
     { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Tên", dataIndex: "name", key: "name" },
-    { title: "Email", dataIndex: "email", key: "email" },
+    {
+      title: "Tên",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps("name"),
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      ...getColumnSearchProps("email"),
+    },
     {
       title: "Vai trò",
       dataIndex: "role",

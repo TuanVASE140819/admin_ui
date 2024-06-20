@@ -30,9 +30,15 @@ const RewardManagementPage = () => {
     },
     // Thêm các phần thưởng khác tại đây
   ]);
+  const [filteredRewards, setFilteredRewards] = useState(rewards);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingReward, setEditingReward] = useState(null);
   const [form] = Form.useForm();
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  useEffect(() => {
+    setFilteredRewards(rewards);
+  }, [rewards]);
 
   useEffect(() => {
     if (editingReward) {
@@ -125,16 +131,32 @@ const RewardManagementPage = () => {
     },
   ];
 
+  const handleSearch = (value) => {
+    setSearchKeyword(value);
+    const filtered = rewards.filter(
+      (reward) =>
+        reward.name.toLowerCase().includes(value.toLowerCase()) ||
+        reward.description.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredRewards(filtered);
+  };
+
   return (
     <div>
       <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
         Thêm phần thưởng
       </Button>
-      <Table columns={columns} dataSource={rewards} />
+      <Input.Search
+        placeholder="Tìm kiếm phần thưởng"
+        allowClear
+        onSearch={handleSearch}
+        style={{ width: 200, float: "right", marginBottom: 10 }}
+      />
+      <Table columns={columns} dataSource={filteredRewards} />
 
       <Modal
         title={editingReward ? "Chỉnh sửa phần thưởng" : "Thêm phần thưởng mới"}
-        open={isModalVisible}
+        visible={isModalVisible}
         onCancel={handleCancel}
         onOk={handleSave}
       >

@@ -37,7 +37,7 @@ const Sidebar = () => {
       onCollapse={onCollapse}
       style={{
         overflow: "auto",
-        height: "100vh",
+        // height: "100vh",
         position: "sticky",
         top: 0,
         left: 0,
