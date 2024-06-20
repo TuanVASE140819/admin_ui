@@ -10,10 +10,16 @@ import {
   GiftOutlined,
   PlayCircleOutlined,
   UnorderedListOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import SubMenu from "antd/es/menu/SubMenu";
-
+import {
+  // ... (các icon khác)
+  ScheduleOutlined, // Icon cho quản lý nhiệm vụ
+  DollarCircleOutlined, // Icon cho quản lý giao dịch
+  ReloadOutlined, // Icon cho quản lý game Quay số
+} from "@ant-design/icons";
 const { Sider } = Layout;
 
 const Sidebar = () => {
@@ -89,6 +95,33 @@ const Sidebar = () => {
           onClick={() => navigate("/reward-management")}
         >
           Quản lý phần thưởng
+        </Menu.Item>
+
+        <SubMenu
+          key="sub3" // Key mới cho submenu "Quản lý nhiệm vụ"
+          icon={<CheckCircleOutlined />}
+          title="Quản lý nhiệm vụ"
+        >
+          <Menu.Item key="12" onClick={() => navigate("/daily-tasks")}>
+            Nhiệm vụ ngày
+          </Menu.Item>
+          <Menu.Item key="13" onClick={() => navigate("/other-tasks")}>
+            Nhiệm vụ khác
+          </Menu.Item>
+        </SubMenu>
+        <Menu.Item
+          key="14"
+          icon={<DollarCircleOutlined />}
+          onClick={() => navigate("/transaction-management")}
+        >
+          Quản lý giao dịch
+        </Menu.Item>
+        <Menu.Item
+          key="15"
+          icon={<ReloadOutlined />}
+          onClick={() => navigate("/spin-game-management")}
+        >
+          Quản lý game Quay số
         </Menu.Item>
         <Sider
           collapsible

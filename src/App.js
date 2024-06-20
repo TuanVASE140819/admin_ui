@@ -26,6 +26,13 @@ import MysteryBoxManagementPage from "./pages/MysteryBoxManagementPage";
 import NewsFormPage from "./pages/NewsFormPage";
 import NewsCategoryManagementPage from "./pages/NewsCategoryManagementPage";
 
+
+import TaskManagementPage from "./pages/TaskManagementPage";
+import TransactionManagementPage from "./pages/TransactionManagementPage";
+import DailyTasksPage from "./pages/DailyTasksPage";
+import OtherTasksPage from "./pages/OtherTasksPage";
+// import SpinGameManagementPage from "./pages/SpinGameManagementPage";
+
 const { Content } = Layout;
 const posts = [
   //Dữ liệu mẫu
@@ -143,6 +150,18 @@ const App = () => {
             path="/news-category-management"
             element={<NewsCategoryManagementPage />}
           />
+          <Route path="task-management" element={<TaskManagementPage />} />
+          <Route
+            path="/transaction-management"
+            element={<TransactionManagementPage />}
+          />
+          {/* <Route
+            path="/spin-game-management"
+            element={<SpinGameManagementPage />}
+          /> */}
+
+          <Route path="/daily-tasks" element={<DailyTasksPage />} />
+          <Route path="/other-tasks" element={<OtherTasksPage />} />
         </Route>
 
         {/* Các route khác không sử dụng MainLayout */}
