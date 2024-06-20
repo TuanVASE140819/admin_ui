@@ -20,6 +20,11 @@ import NewsManagementPage from "./pages/NewsManagementPage";
 import MainLayout from "./components/MainLayout";
 
 import moment from "moment";
+import RewardManagementPage from "./pages/RewardManagementPage";
+import LuckyWheelManagementPage from "./pages/LuckyWheelManagementPage";
+import MysteryBoxManagementPage from "./pages/MysteryBoxManagementPage";
+import NewsFormPage from "./pages/NewsFormPage";
+import NewsCategoryManagementPage from "./pages/NewsCategoryManagementPage";
 
 const { Content } = Layout;
 const posts = [
@@ -27,6 +32,51 @@ const posts = [
 ];
 const App = () => {
   // Dữ liệu giả lập về các trường học
+  // const schools = [
+  //   {
+  //     id: 1,
+  //     name: "Trường A",
+  //     address: "Địa chỉ A",
+  //     phone: "0123456789",
+  //     email: "test@gmail.com",
+  //     website: "https://example.com",
+  //     logo: "https://via.placeholder.com/150",
+  //     cover: "https://via.placeholder.com/150",
+  //     students: 1000,
+  //     groups: [
+  //       {
+  //         id: 1,
+  //         name: "Nhóm A",
+  //         students: 100,
+  //       },
+  //       {
+  //         id: 2,
+  //         name: "Nhóm B",
+  //         students: 200,
+  //       },
+  //     ],
+  //     newsCategories: [
+  //       {
+  //         id: 1,
+  //         name: "Thể thao",
+  //         createdAt: moment("2023-06-19"),
+  //         status: "active",
+  //       },
+  //       {
+  //         id: 2,
+  //         name: "Giáo dục",
+  //         createdAt: moment("2023-06-18"),
+  //         status: "inactive",
+  //       },
+  //       {
+  //         id: 3,
+  //         name: "Công nghệ",
+  //         createdAt: moment("2023-06-17"),
+  //         status: "active",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   return (
     <Router>
@@ -49,22 +99,38 @@ const App = () => {
           />
           <Route path="news-management" element={<NewsManagementPage />} />
           <Route path="user-management" element={<UserManagementPage />} />
+          <Route path="/reward-management" element={<RewardManagementPage />} />
+          <Route path="/school/:schoolId" element={<SchoolDetailPage />} />
+          <Route
+            path="/school/:schoolId/students"
+            element={<StudentListPage />}
+          />
+          <Route path="/post/:postId" element={<PostDetailPage />} />
+          <Route path="/user/:userId" element={<UserDetailPage />} />
+          <Route
+            path="/school/:schoolId/groups"
+            element={<GroupDetailPage />}
+          />
+          <Route
+            path="/user/:userId/posts/:schoolId"
+            element={<UserPostListPage />}
+          />
+          <Route path="/user/:userId/gifts" element={<GiftListPage />} />
+          {/* /school/1/postsNew */}
+          <Route
+            path="/school/:schoolId/postsNew"
+            element={<PostManagementPage />}
+          />
+          <Route path="/lucky-wheel" element={<LuckyWheelManagementPage />} />
+          <Route path="/mystery-box" element={<MysteryBoxManagementPage />} />
+          {/* /news-category-management */}
+          <Route
+            path="/news-category-management"
+            element={<NewsCategoryManagementPage />}
+          />
         </Route>
 
         {/* Các route khác không sử dụng MainLayout */}
-        <Route path="/school/:schoolId" element={<SchoolDetailPage />} />
-        <Route
-          path="/school/:schoolId/students"
-          element={<StudentListPage />}
-        />
-        <Route path="/post/:postId" element={<PostDetailPage />} />
-        <Route path="/user/:userId" element={<UserDetailPage />} />
-        <Route path="/school/:schoolId/groups" element={<GroupDetailPage />} />
-        <Route
-          path="/user/:userId/posts/:schoolId"
-          element={<UserPostListPage />}
-        />
-        <Route path="/user/:userId/gifts" element={<GiftListPage />} />
       </Routes>
     </Router>
   );

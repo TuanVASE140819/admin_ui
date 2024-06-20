@@ -46,6 +46,11 @@ const PostManagementPage = () => {
       status: "hidden",
       createdAt: new Date("2023-06-17"),
     },
+    {
+      id: 3,
+      title: "Bài viết 3",
+      content: "Nội dung bài viết 3...",
+    },
     // ... thêm các bài viết khác
   ]);
 
