@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Image,
   Avatar,
@@ -10,7 +9,13 @@ import {
   Collapse,
   Tag,
   Card,
+  message,
+  Form,
+  Input,
+  Modal,
+  Upload,
 } from "antd";
+import { UploadOutlined } from "@ant-design/icons"; // Import icon Upload
 
 const { Panel } = Collapse;
 const { Meta } = Card;
@@ -24,7 +29,49 @@ const SchoolDetailPage = ({ schools }) => {
   // if (!school) {
   //   return <div>Không tìm thấy trường học</div>;
   // }
+  const [isCreateGroupModalVisible, setIsCreateGroupModalVisible] =
+    useState(false);
+  const [createGroupForm] = Form.useForm();
 
+  const showCreateGroupModal = () => {
+    setIsCreateGroupModalVisible(true);
+  };
+
+  const handleCreateGroupCancel = () => {
+    setIsCreateGroupModalVisible(false);
+  };
+
+  const [imageUrl, setImageUrl] = useState("");
+
+  const handleCreateGroup = async () => {
+    try {
+      const values = await createGroupForm.validateFields();
+      values.bannerUrl = imageUrl;
+      // TODO: Xử lý logic tạo nhóm ở đây (ví dụ: gửi dữ liệu lên API)
+      message.success("Tạo nhóm thành công!");
+      setIsCreateGroupModalVisible(false);
+      createGroupForm.resetFields();
+    } catch (errorInfo) {
+      console.log("Validate Failed:", errorInfo);
+    }
+  };
+
+  const handleChange = (info) => {
+    if (info.file.status === "uploading") {
+      // Đang tải lên
+      return;
+    }
+    if (info.file.status === "done") {
+      // Tải lên thành công
+      // Get this url from response in real world.
+      setImageUrl(URL.createObjectURL(info.file.originFileObj));
+    }
+  };
+  const dummyRequest = ({ file, onSuccess }) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };
   return (
     <div style={{ padding: "24px" }}>
       {" "}
@@ -86,6 +133,57 @@ const SchoolDetailPage = ({ schools }) => {
       >
         Quản lý bài viết
       </Button>
+      <Button
+        type="primary"
+        style={{ marginTop: 16, marginLeft: 16 }}
+        onClick={showCreateGroupModal}
+      >
+        Tạo nhóm
+      </Button>
+      <Modal
+        title="Tạo nhóm mới"
+        open={isCreateGroupModalVisible}
+        onCancel={handleCreateGroupCancel}
+        onOk={handleCreateGroup}
+      >
+        <Form form={createGroupForm} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Tên nhóm"
+            rules={[{ required: true, message: "Vui lòng nhập tên nhóm" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Mô tả"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          {/* Thêm Upload để chọn ảnh */}
+          <Form.Item label="Ảnh nhóm">
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              action="https://www.mocky.io/v2/5cc8019d300000980a055e76" // Thay bằng API endpoint của bạn
+              customRequest={dummyRequest} // Sử dụng dummyRequest để tải ảnh lên
+              onChange={handleChange}
+            >
+              {imageUrl ? (
+                <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+              ) : (
+                <div>
+                  <UploadOutlined />
+                  <div style={{ marginTop: 8 }}>Tải ảnh lên</div>
+                </div>
+              )}
+            </Upload>
+          </Form.Item>
+        </Form>
+      </Modal>
       <div style={{ marginTop: 16 }}>
         <h2>Danh sách các nhóm đã tạo</h2>
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
@@ -99,68 +197,9 @@ const SchoolDetailPage = ({ schools }) => {
                 src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
               />
             }
+            onClick={() => navigate(`/school/1/groups/1`)}
           >
             <Meta title="Nhóm 1" description="Mô tả nhóm 1" />
-          </Card>
-          <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Nhóm 2" description="Mô tả nhóm 2" />
-          </Card>
-          <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Nhóm 2" description="Mô tả nhóm 2" />
-          </Card>
-          <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Nhóm 2" description="Mô tả nhóm 2" />
-          </Card>
-          <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Nhóm 2" description="Mô tả nhóm 2" />
-          </Card>
-          <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={
-              <img
-                alt="example"
-                src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-              />
-            }
-          >
-            <Meta title="Nhóm 2" description="Mô tả nhóm 2" />
           </Card>
         </div>
       </div>

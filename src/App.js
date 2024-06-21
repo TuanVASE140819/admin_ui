@@ -31,6 +31,7 @@ import TaskManagementPage from "./pages/TaskManagementPage";
 import TransactionManagementPage from "./pages/TransactionManagementPage";
 import DailyTasksPage from "./pages/DailyTasksPage";
 import OtherTasksPage from "./pages/OtherTasksPage";
+import GroupPostListPage from "./pages/GroupPostListPage";
 // import SpinGameManagementPage from "./pages/SpinGameManagementPage";
 
 const { Content } = Layout;
@@ -159,6 +160,7 @@ const App = () => {
 
           <Route path="/daily-tasks" element={<DailyTasksPage />} />
           <Route path="/other-tasks" element={<OtherTasksPage />} />
+          <Route path="/school/1/groups/1" element={<GroupPostListPage />} />
         </Route>
 
         {/* Các route khác không sử dụng MainLayout */}
