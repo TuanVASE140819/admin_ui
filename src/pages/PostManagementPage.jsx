@@ -170,7 +170,7 @@ const PostManagementPage = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => navigate(`/post/${record.id}`)}>
+          <Button type="link" onClick={() => navigate(`/post/1`)}>
             Xem nội dung
           </Button>
           <Button type="link" onClick={() => handleEdit(record)}>

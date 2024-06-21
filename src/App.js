@@ -127,7 +127,7 @@ const App = () => {
             path="/school/:schoolId/students"
             element={<StudentListPage />}
           />
-          <Route path="/post/:postId" element={<PostDetailPage />} />
+          <Route path="/post/1" element={<PostDetailPage />} />
           <Route path="/user/:userId" element={<UserDetailPage />} />
           <Route
             path="/school/:schoolId/groups"
@@ -139,10 +139,7 @@ const App = () => {
           />
           <Route path="/user/:userId/gifts" element={<GiftListPage />} />
           {/* /school/1/postsNew */}
-          <Route
-            path="/school/:schoolId/postsNew"
-            element={<PostManagementPage />}
-          />
+          <Route path="/school/1/postsNew" element={<PostManagementPage />} />
           <Route path="/lucky-wheel" element={<LuckyWheelManagementPage />} />
           <Route path="/mystery-box" element={<MysteryBoxManagementPage />} />
           {/* /news-category-management */}

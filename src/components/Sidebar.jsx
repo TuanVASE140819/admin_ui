@@ -37,11 +37,13 @@ const Sidebar = () => {
       onCollapse={onCollapse}
       style={{
         overflow: "auto",
-        // height: "100vh",
+        height: "calc(100vh - 64px)", // Chiều cao bằng viewport trừ chiều cao header
         position: "sticky",
-        top: 0,
+        zIndex: 3,
+        top: 64, // Cố định siderbar dưới header
         left: 0,
-      }} // Thêm style để cố định vị trí
+        background: "#fff",
+      }}
     >
       <div className="logo" />
       <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">

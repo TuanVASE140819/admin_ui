@@ -38,17 +38,16 @@ const MainLayout = () => {
       }}
     >
       <Sidebar
-      // style={{
-      //   position: "fixed",
-      //   left: 0,
-      //   top: 0,
-      //   bottom: 0,
-      // }}
+       
       />
       <Layout>
         <Header
-          className="header-container"
           style={{
+            position: "fixed", // Giữ header cố định
+            top: 0,
+            left: 0,
+            width: "100%",
+            zIndex: 1,
             background: "#fff",
             padding: "0 24px",
             display: "flex",
@@ -81,7 +80,13 @@ const MainLayout = () => {
             </Dropdown>
           </Space>
         </Header>
-        <Content style={{ margin: "20px 16px 0", overflow: "auto" }}>
+        <Content
+          style={{
+            margin: "20px 16px 0",
+            overflow: "auto",
+            marginTop: "64px", // Khoảng cách từ header đến nội dung
+          }}
+        >
           <div
             className="site-layout-background"
             style={{ padding: 24, minHeight: 360 }}
